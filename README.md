@@ -58,16 +58,19 @@
 | E1 九州沖/南西諸島沖 | 甲 | ✅ **已突破**（7月9日） | 三条血条（攻坚P1/输送P2/攻坚P3），札×2，可捞新船桐/花月 |
 | E2 南沙諸島沖/オルモック沖/サンベルナルジノ海峡沖 | 甲 | ✅ **已突破**（7月11日） | 三条血条（输送P1/攻坚P2/攻坚P3），开路+开boss双解谜，可捞新船 Indiana、Atlanta、伊36/41；通关奖励新船 Reno |
 | E3 パラオ沖/ウルシー泊地沖/中部太平洋（前段决战） | 甲 | **✅ 全甲突破**（解谜✅，P1✅ 7月14日，P2 输送✅／P3✅ 7月15日，P4 削甲+斩杀✅ **7月18日**——**前段作战全甲通关**） | **四条血条**（攻坚P1/输送P2/攻坚P3/攻坚P4），札×4，潜艇特殊攻击；豪华掉落池（大鳳/Iowa/潜水空母组/美空母群）；通关奖励新船 Independence |
-| E4 地中海南仏沖/アルジェリア沖/イタリア半島沖 | - | **未出击**（7月19日 02:00 开放） | 后段（拡張作戦）【Opération Vado】，札×2（仏第3艦隊/仏地中海艦隊）；强袭→脱出再编→输送→陆航反击；可捞新船 Vautour 及 Richelieu/意舰队；通关奖励新船 Algérie（重巡） |
+| E4 地中海南仏沖/アルジェリア沖/イタリア半島沖 | 甲 | **进行中**（P1✅ 7月19日） | 后段（拡張作戦）【Opération Vado】，**五条血条**，札×2（仏第3艦隊/仏地中海艦隊）；可捞新船 Vautour 及 Richelieu/意舰队；通关奖励新船 Algérie（重巡） |
 | E5 | - | 未开放 | 后段最终海域，情报后日公布 |
 
 ## 参考资料
 
-- [2026夏活检证情报文档（Google Docs）](https://docs.google.com/document/d/1cJ66SdOAH_EIerB3OuGH05lXk7bTl45VGlwbYZRCqDg/edit?tab=t.0) — 倍卡、解谜条件等检证数据来源
+- [2026夏活检证情报文档（Google Docs）](https://docs.google.com/document/d/1cJ66SdOAH_EIerB3OuGH05lXk7bTl45VGlwbYZRCqDg/edit?tab=t.0) — 倍卡、解谜条件等检证数据来源（离线备份：`assets/2026年夏活信息搬运贴备份档.txt`）
+- [2026年夏季活动（kcwiki 中文维基）](https://zh.kcwiki.cn/wiki/2026%E5%B9%B4%E5%A4%8F%E5%AD%A3%E6%B4%BB%E5%8A%A8) — 海域地图、敌编成、分歧条件等客观数据参考（各海域有子页面）
+- [深海敌舰属性数据 CSV](assets/AbyssalShips-20260719.csv) — 2026-07-19 版，本仓库 boss 耐久/装甲数值来源
+- [KCNav（TsunDB 路线/敌编成实测库）](https://tsunkit.net/nav/) — 各点敌编成、敌制空阈值数据来源（本活动为 62-1~62-4 图）
 - [简易倍卡学（NGA）](https://bbs.nga.cn/read.php?tid=41906460) — 倍卡计算方法参考
 - [欧洲海域对特定敌舰补正（Google Docs）](https://docs.google.com/document/d/1TmsVRhmkqjH1bczdoBHtrdcYv7JYD95NVkMrAK5bpK4/edit?tab=t.0)
 - [2025版欧洲海域舰载机/基地特效分级表（Google Sheets）](https://docs.google.com/spreadsheets/d/1xLQCPWCKjawi3Kh_LMKPxJmbGnJ2thOOgfm_xORGr3M/edit?gid=0#gid=0) — 舰载机 A/B/C 分组倍卡对照表
-- [海域分歧条件 by ゆめみ（NGA）](https://bbs.nga.cn/read.php?tid=47140252)
+- [海域分歧条件 by ゆめみ（NGA）](https://bbs.nga.cn/read.php?tid=47140252)（离线备份：`assets/2026年夏活海图带路条件 NGA玩家社区.html`）
 - 海域掉落逆索引 by @CC_jabberwock（链接待补）
 
 
