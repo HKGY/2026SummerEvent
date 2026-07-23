@@ -1,0 +1,294 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@4/animate.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css">
+    <title>Aircraft Multiplier Calculator 2026</title>
+</head>
+
+<body>
+    <div class="container-lg px-3 my-5 markdown-body">
+        <h3>舰载机倍卡计算器 2026夏</h3>
+        What is svdata? -> <a class="h1" href="/20240808-data.html">Multiplier Calculator</a>
+        <br>
+        <small>
+            数据：ゆめみ 2025版欧洲舰载机分级表（A1~A3/B1~B4/C1~C3）＋ 2026夏活检证文档（2026-07-23）。<br>
+            适用 E4/E5（欧洲体系）。E3 的「飞机A/B」为按架数叠加的另一套机制（飞机A：O/G等点 1架1.08/2架1.16，Z点 1架1.11/2架1.18/3架1.28?，打空无效），不在本计算器范围。<br>
+            注：C组（基地）与 E4-Z/E5-J2 等点位的 2026 倍率未检证，按 1.00 计；E4-S 行数值带「?」。Loire 130M／130M改(熟練) 在 E5 另有单独 1.12?（SP 列）。搭载 0 格无效。
+        </small>
+        <br>
+        <textarea id="svdata" rows="20" cols="100" placeholder="Paste your svdata JSON here"></textarea>
+        <br>
+        <label><input type="checkbox" id="ignoreInv"> 忽略持有判定（把所有装备视为持有；新装备 ID 未收录时也请勾选）</label>
+        <br>
+        <select id="point"></select>
+        <br>
+        <label>
+            <select id="category1"></select>
+            <input type="checkbox" id="enable1" checked> Enable
+        </label>
+        <br>
+        <label>
+            <select id="category2"></select>
+            <input type="checkbox" id="enable2" checked> Enable
+        </label>
+        <br>
+        <label>
+            <select id="category3"></select>
+            <input type="checkbox" id="enable3" checked> Enable
+        </label>
+        <br>
+        <label>
+            <select id="category4"></select>
+            <input type="checkbox" id="enable4" checked> Enable
+        </label>
+        <br>
+        <button onclick="calculate()">Calculate</button>
+        <p id="result"></p>
+        <script>
+            // 列: ID,Name,A1,A2,A3,B1,B2,B3,B4,C1,C2,C3,SP,Power,Air
+            // ID=0 表示装备 ID 未收录（请勾选“忽略持有判定”）
+            const categories = {
+                Fighter: `375,XF5U,,,TRUE,,,,,,,,,0,12
+353,Fw190 A-5改(熟練),,,TRUE,,,,,,,TRUE,,0,11
+189,Re.2005 改,TRUE,,,,,,,,,TRUE,,0,11
+435,Corsair Mk.II(Ace),TRUE,,,,,,,,TRUE,,,0,11
+422,FR-1 Fireball,,,TRUE,,,,,,,,,0,11
+159,Fw190T改,,,TRUE,,,,,,,TRUE,,0,10
+255,F6F-5N,,,TRUE,,,,,,,,,0,10
+206,F6F-5,,,TRUE,,,,,,,,,0,10
+434,Corsair Mk.II,TRUE,,,,,,,,TRUE,,,0,10
+473,F4U-2 Night Corsair,,TRUE,,,,,,,TRUE,,,0,9
+0,Bf109 T-3(G),,,TRUE,,,,,,,,,0,9
+252,Seafire Mk.III改,TRUE,,,,,,,,TRUE,,,0,9
+158,Bf109T改,,,TRUE,,,,,,,TRUE,,0,8
+254,F6F-3N,,,TRUE,,,,,,,,,0,8
+205,F6F-3,,,TRUE,,,,,,,,,0,8
+184,Re.2001 OR改,,TRUE,,,,,,,,TRUE,,0,6
+198,F4F-4,,,TRUE,,,,,,,,,0,5
+197,F4F-3,,,TRUE,,,,,,,,,0,4
+249,Fulmar,,TRUE,,,,,,,,TRUE,,0,3
+216,Ro.44水上戦闘機bis,,,TRUE,,,,,,,,,0,3
+0,Sea Gladiator,,TRUE,,,,,,,,,,0,2
+215,Ro.44水上戦闘機,,,TRUE,,,,,,,,,0,2`,
+                Attacker: `389,TBM-3W+3S,,,TRUE,,,,,,,,,10,0
+257,TBM-3D,,,TRUE,,,,,,,,,9,0
+256,TBF,,,TRUE,,,,,,,,,9,0
+481,Mosquito TR Mk.33,TRUE,,,,,,,,TRUE,,,8,0
+244,Swordfish Mk.III(熟練),TRUE,,,TRUE,,,,,,,,8,0
+0,Ju87 D-4(Fliegerass),TRUE,,,,,,,,,,,7,0
+424,Barracuda Mk.II,TRUE,,,,,,,,,,,7,0
+425,Barracuda Mk.III,TRUE,,,,,,,,,,,6,0
+0,TBD(Yellow Wings),,,TRUE,,,,,,,,,6,0
+196,TBD,,,TRUE,,,,,,,,,5,0
+243,Swordfish Mk.II(熟練),,TRUE,,TRUE,,,,,,,,5,0
+188,Re.2001 G改,,TRUE,,,,,,,,,,4,0
+242,Swordfish,,,TRUE,TRUE,,,,,,,,3,0`,
+                Bomber: `475,AU-1,,TRUE,,,,,,,TRUE,,,12,9
+421,SB2C-5,,,TRUE,,,,,,,,,12,2
+476,F4U-7,TRUE,,,,,,,,TRUE,,,11,10
+420,SB2C-3,,,TRUE,,,,,,,,,11,2
+306,Ju87C改二(KMX搭載機/熟練),,TRUE,,,,,,,,,,10,0
+305,Ju87C改二(KMX搭載機),,TRUE,,,,,,,,,,9,0
+64,Ju87C改,,TRUE,,,,,,,,,,9,0
+0,SBD VB-2(爆撃飛行隊),,TRUE,,,,,,,,,,8,2
+233,F4U-1D,,,TRUE,,,,,,,,,7,7
+419,SBD-5,,,TRUE,,,,,,,,,7,2
+0,SBD(Yellow Wings),,,TRUE,,,,,,,,,7,2
+474,F4U-4,,TRUE,,,,,,,TRUE,,,6,10
+195,SBD,,,TRUE,,,,,,,,,6,2
+316,Re.2001 CB改,,TRUE,,,,,,,,,,6,4
+248,Skua,,TRUE,,,,,,,,,,4,2
+277,FM-2,,,TRUE,,,,,,,,,2,6`,
+                Recon: `415,SO3C Seamew改,,,TRUE,,,,,,,,,0,0
+0,SOC Seagull 後期型(熟練),,,TRUE,,,,,,,,,0,0
+371,Fairey Seafox改,,,TRUE,,,,,,,,,0,0
+171,OS2U,,,TRUE,,,,,,,,,0,0
+0,SBD VS-2(偵察飛行隊),,TRUE,,,,,,,,,,0,0
+538,Loire 130M改(熟練),TRUE,,,,,TRUE,,,,,TRUE,0,0
+370,Swordfish Mk.II改(水偵型),,,TRUE,TRUE,,,,,,,,0,0
+515,Sea Otter,TRUE,,,,TRUE,,,,TRUE,,,0,0
+0,Ar196改,,TRUE,,,,TRUE,,,,,,0,0
+163,Ro.43水偵,,,TRUE,,,,,,,,,0,0
+414,SOC Seagull,,,TRUE,,,,,,,,,0,0
+304,S9 Osprey,,,TRUE,,,,,,,,,0,0
+510,Walrus,,TRUE,,,TRUE,,,,,TRUE,,0,0
+423,Fulmar(戦闘偵察/熟練),TRUE,,,,TRUE,,,,TRUE,,,2,4
+471,Loire 130M,TRUE,,,,,TRUE,,,TRUE,,TRUE,0,0`,
+                SeaplaneBomber: `369,Swordfish Mk.III改(水上機型/熟練),,,TRUE,TRUE,,,,,,,,8,0
+194,Laté 298B,,TRUE,,,,TRUE,,,,,,5,0
+368,Swordfish Mk.III改(水上機型),,,TRUE,TRUE,,,,,,,,7,0
+367,Swordfish(水上機型),,,TRUE,TRUE,,,,,,,,5,0`,
+                LandAttacker: `396,深山改,,,,,,,,TRUE,,,,17,0
+395,深山,,,,,,,,TRUE,,,,16,0
+406,Do 217 K-2＋Fritz-X,,,,,,,,,,TRUE,,16,0
+0,Do 217 E-5＋TV誘導型 Hs293D,,,,,,,,,,TRUE,,14,0
+405,Do 217 E-5＋Hs293初期型,,,,,,,,,,TRUE,,13,0
+433,SM.79 bis(熟練),,,,,,,,,TRUE,,,13,0
+432,SM.79 bis,,,,,,,,,,TRUE,,12,0
+431,SM.79,,,,,,,,,,TRUE,,9,0
+459,B-25,,,,,,,,,,TRUE,,8,0
+479,Mosquito FB Mk.VI,,,,,,,,,TRUE,,,5,0
+401,Do 17 Z-2,,,,,,,,,,TRUE,,0,0`,
+                LandFighterEtc: `516,Me 262 A-1a/R1,,,,,,,,,TRUE,,,0,15
+354,Fw190 D-9,,,,,,,,,,TRUE,,0,12
+253,Spitfire Mk.IX(熟練),,,,,,,,,TRUE,,,0,10
+251,Spitfire Mk.V,,,,,,,,,TRUE,,,0,9
+250,Spitfire Mk.I,,,,,,,,,TRUE,,,0,7
+178,PBY-5A Catalina,,,,,,,,,,TRUE,,0,0
+480,Mosquito PR Mk.IV,,,,,,,,,TRUE,,,0,0`,
+                Jet: `0,Ho229,,,,,,,,,TRUE,,,16,0`,
+                EventMultiplier: `汎マップ,E4,1.06,1.05,1.04,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+汎マップ,E5,1.07,1.05,1.03,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.12`,
+                PointMultiplier: `個別マス,E4-D(P1boss),1.04,1.03,1.03,1.00,1.04,1.07,1.04,1.00,1.00,1.00,1.00
+個別マス,E4-S(P3boss?),1.05,1.04,1.03,1.06,1.03,1.06,1.03,1.00,1.00,1.00,1.00
+個別マス,E4-其他点,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00
+個別マス,E5-全点(点位未检证),1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00`
+            };
+
+            function parseCSV(data) {
+                const rows = data.trim().split('\n');
+                return rows.map(row => row.split(','));
+            }
+
+            const GROUPS = ["A1", "A2", "A3", "B1", "B2", "B3", "B4", "C1", "C2", "C3", "SP"];
+
+            function Table(data, seenSlotitemIds, ignoreInv) {
+                const rows = parseCSV(data);
+                const columns = ["ID", "Name", "A1", "A2", "A3", "B1", "B2", "B3", "B4", "C1", "C2", "C3", "SP", "Power", "Air"];
+                return rows.map(row => {
+                    const item = Object.fromEntries(columns.map((col, idx) => [col, row[idx]]));
+                    item.Inv = ignoreInv || seenSlotitemIds.has(item.ID);
+                    return item;
+                });
+            }
+
+            function MultTable(data) {
+                const rows = parseCSV(data);
+                const columns = ["Type", "Name", "A1", "A2", "A3", "B1", "B2", "B3", "B4", "C1", "C2", "C3", "SP"];
+                return rows.map(row => Object.fromEntries(columns.map((col, idx) => [col, row[idx]])));
+            }
+
+            function populateSelect(id, options) {
+                const select = document.getElementById(id);
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.text = option;
+                    select.add(opt);
+                });
+            }
+
+            function initialize() {
+                const categoryOptions = Object.keys(categories).filter(key => key !== 'EventMultiplier' && key !== 'PointMultiplier');
+                const pointOptions = parseCSV(categories.PointMultiplier).map(row => row[1]);
+
+                populateSelect('point', pointOptions);
+                populateSelect('category1', categoryOptions);
+                populateSelect('category2', categoryOptions);
+                populateSelect('category3', categoryOptions);
+                populateSelect('category4', categoryOptions);
+            }
+
+            function calculate() {
+                const svdata = document.getElementById('svdata').value;
+                const p = document.getElementById('point').value;
+                const ignoreInv = document.getElementById('ignoreInv').checked;
+
+                const categoriesEnabled = [
+                    { enabled: document.getElementById('enable1').checked, category: document.getElementById('category1').value },
+                    { enabled: document.getElementById('enable2').checked, category: document.getElementById('category2').value },
+                    { enabled: document.getElementById('enable3').checked, category: document.getElementById('category3').value },
+                    { enabled: document.getElementById('enable4').checked, category: document.getElementById('category4').value }
+                ].filter(c => c.enabled);
+
+                let seenSlotitemIds = new Set();
+                if (!ignoreInv) {
+                    const content = svdata.slice(7);
+                    const equip = JSON.parse(content);
+                    seenSlotitemIds = new Set(equip.api_data.api_slot_item.map(item => item.api_slotitem_id.toString()));
+                }
+
+                const EM = MultTable(categories.EventMultiplier);
+                const PM = MultTable(categories.PointMultiplier);
+
+                const enabledTables = categoriesEnabled.map(c => Table(categories[c.category], seenSlotitemIds, ignoreInv));
+
+                let maxMult = 0;
+                let maxPower = 0;
+                let maxAir = 0;
+                let project = [];
+
+                function calculateMultiplier(items) {
+                    let thisMult = 1;
+                    for (const mult of GROUPS) {
+                        if (items.some(item => item[mult] === "TRUE")) {
+                            for (const i of EM) {
+                                if (p.includes(i.Name)) {
+                                    thisMult *= parseFloat(i[mult]);
+                                }
+                            }
+                            for (const i of PM) {
+                                if (i.Name === p) {
+                                    thisMult *= parseFloat(i[mult]);
+                                }
+                            }
+                        }
+                    }
+                    return thisMult;
+                }
+
+                function calculatePower(items) {
+                    let thisPower = 0;
+                    for (const i of items) {
+                        thisPower += parseFloat(i["Power"])
+                    }
+                    return thisPower;
+                }
+                function calculateAir(items) {
+                    let thisAir = 0;
+                    for (const i of items) {
+                        thisAir += parseFloat(i["Air"])
+                    }
+                    return thisAir;
+                }
+
+                function generateCombinations(arrays, prefix = []) {
+                    if (arrays.length === 0) {
+                        const items = prefix.filter(item => item.Inv);
+                        if (items.length === prefix.length) {
+                            const thisMult = calculateMultiplier(items);
+                            const thisPower = calculatePower(items);
+                            const thisAir = calculateAir(items);
+                            if (thisMult > maxMult || thisMult == maxMult && thisPower > maxPower || thisMult == maxMult && thisPower == maxPower && thisAir > maxAir) {
+                                maxMult = thisMult;
+                                maxPower = thisPower;
+                                maxAir = thisAir;
+                                project = items.map(item => item.Name);
+                            }
+                        }
+                    } else {
+                        const [first, ...rest] = arrays;
+                        for (const item of first) {
+                            generateCombinations(rest, [...prefix, item]);
+                        }
+                    }
+                }
+
+                generateCombinations(enabledTables);
+
+                document.getElementById('result').innerText = `Equipment: ${project.join(', ')}\n Max Multiplier: ${maxMult.toFixed(4)}\n Max Fire Power: ${maxPower}\n Max Air Superiority: ${maxAir}`;
+            }
+
+            window.onload = initialize;
+        </script>
+    </div>
+    <div class="particle-container"></div>
+    <script src="script.js"></script>
+</body>
+
+</html>
