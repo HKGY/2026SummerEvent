@@ -14,7 +14,7 @@
 ## 目录导航
 
 ### 实用工具
-- [🛠 舰载机倍卡计算器 2026夏](assets/tools/KancolleAirplaneMultiplierCalculator2026.html) — E4/E5 欧洲舰载机分级（A1~A3／B1~B4／C1~C3＋Loire 单独倍率）最优组合搜索；由 [2024 版](https://xn--e4v.xn--q9jyb4c/KancolleAirplaneMultiplierCalculator2024)更新（ゆめみ 2025 分级表＋2026 检证倍率）。GitHub 上请下载后本地打开，或部署到原站同目录。
+- [🛠 舰载机倍卡计算器 2026夏（在线版）](https://xn--e4v.xn--q9jyb4c/KancolleAirplaneMultiplierCalculator2024) — E4/E5 欧洲舰载机分级（A1~A3／B1~B4／C1~C3＋Loire 单独倍率）最优组合搜索；ゆめみ 2025 分级表＋2026 检证倍率（[仓库备份](assets/tools/KancolleAirplaneMultiplierCalculator2026.html)）。
 
 ### 00-活动总览
 - [活动信息](00-活动总览/活动信息.md) — 时间、规模、运营公告要点
